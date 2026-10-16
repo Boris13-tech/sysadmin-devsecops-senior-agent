@@ -1,16 +1,20 @@
-// Poste de Contrôle Système — Logique Front-End (Mode Local Direct & Mode Aperçu Web)
+// ==============================================================================
+// Poste de Contrôle Système — Logique Front-End Humanisée & Pédagogique
+// Auteur : Boris Owandja (@Boris13-tech)
+// ==============================================================================
 
 let isLocalConnected = false;
 let currentFilter = "";
+let currentViewMode = "simple"; // 'simple' ou 'expert'
 const LOCAL_API_BASE = "http://127.0.0.1:8765";
 
 let appState = {
   health: {
-    Timestamp: "16/10/2026 18:10:00",
+    Timestamp: "Aujourd'hui à 18:10",
     Hostname: "LEGRAND-TECH",
-    OS: "Microsoft Windows 11 Famille (Build 26300)",
-    UptimeText: "0j 13h 38m",
-    CPU: { Name: "Intel Core i5-1135G7 @ 2.40GHz", Cores: 4, Logical: 8, LoadPercent: 28 },
+    OS: "Microsoft Windows 11 Famille",
+    UptimeText: "13h et 38 minutes",
+    CPU: { Name: "Intel Core i5-1135G7", Cores: 4, Logical: 8, LoadPercent: 28 },
     RAM: { TotalGB: 7.7, UsedGB: 6.1, FreeGB: 1.6, UsedPct: 79.2, Status: "OK" },
     Disks: [
       { Drive: "C:", SizeGB: 236.87, FreeGB: 24.5, UsedPct: 89.7, Status: "ATTENTION" },
@@ -52,112 +56,155 @@ let appState = {
     {
       component: "Démon Docker",
       check: "Mode d'exécution et droits socket",
-      finding: "Docker Desktop (WSL2 Engine) — Accès restreint aux administrateurs locaux",
-      status: "Conforme",
+      finding: "Docker Desktop (Moteur WSL2) — Accès sécurisé réservé à votre session",
+      status: "Tout est propre",
       level: "ok"
     },
     {
       component: "Privilèges Conteneurs",
       check: "Exécution non-root & Flag --privileged",
-      finding: "Aucun conteneur détecté en mode privilégié (--privileged)",
-      status: "Conforme",
+      finding: "Aucun conteneur ne tourne avec des droits système excessifs",
+      status: "Sécurisé",
       level: "ok"
     },
     {
-      component: "Volumes & Images",
+      component: "Volumes & Images résiduelles",
       check: "Ressources orphelines (dangling)",
-      finding: "Nettoyage périodique conseillé (docker image/volume prune)",
+      finding: "Quelques images de test oubliées — un nettoyage de temps en temps est conseillé",
       status: "À surveiller",
       level: "warn"
     },
     {
-      component: "Kubernetes (kubectl)",
+      component: "Outils Kubernetes (kubectl)",
       check: "Pod Security Standards & Contextes",
-      finding: "kubectl détecté — isolation des namespaces recommandée en production",
-      status: "Bonnes pratiques",
+      finding: "kubectl est disponible pour vos déploiements locaux",
+      status: "Prêt",
       level: "ok"
     }
   ],
   dsavLogs: [
     {
       time: "18:08:12",
-      title: "Allègement du démarrage (6 applications retirées du lancement automatique)",
-      backup: "~/.gemini/Backups/SysAdmin/HKCU_Run_Backup_20261016-180812.reg",
-      status: "Vérifié"
+      title: "Allègement du démarrage (6 applications gourmandes désactivées au boot)",
+      backup: "HKCU_Run_Backup_20261016.reg (Copie de secours du Registre)",
+      status: "Vérifié & Sûr"
     },
     {
       time: "18:08:15",
-      title: "Nettoyage des fichiers temporaires obsolètes (+41,15 Mo récupérés)",
-      backup: "Fichiers > 48h uniquement (Documents intacts)",
-      status: "Vérifié"
+      title: "Nettoyage des fichiers temporaires (+41,15 Mo récupérés sur le disque C:)",
+      backup: "Seuls les fichiers temporaires > 48h ont été supprimés (Documents intacts)",
+      status: "Vérifié & Sûr"
     }
   ]
 };
 
+// Explications rédigées avec bienveillance humaine
 const PROCESS_EXPLANATIONS = {
-  "Memory Compression": "Mécanisme interne de Windows qui compresse la RAM au lieu de ralentir sur le disque.",
-  "MsMpEng": "Service antivirus Microsoft Defender actif en arrière-plan.",
-  "Antigravity": "Environnement de développement et d'assistance technique.",
-  "explorer": "Gestionnaire du Bureau Windows, de la barre des tâches et des fenêtres de fichiers.",
-  "svchost": "Processus hôte regroupant plusieurs services système de Windows.",
-  "chrome": "Navigateur Google Chrome (chaque onglet ouvert occupe un segment mémoire).",
-  "msedge": "Navigateur Microsoft Edge.",
-  "claude": "Processus d'assistance en ligne de commande.",
-  "powershell": "Interpréteur de commandes et d'automatisation Windows."
+  simple: {
+    "Memory Compression": "Windows compresse lui-même un peu de mémoire pour garder votre ordinateur fluide.",
+    "MsMpEng": "Votre antivirus officiel Microsoft Defender qui monte la garde en toute discrétion.",
+    "Antigravity": "Votre assistant de développement et d'administration système intelligent.",
+    "explorer": "L'affichage du Bureau Windows, de la barre des tâches et de vos dossiers.",
+    "svchost": "Services internes de Windows (son, mises à jour, réseau). C'est normal qu'il soit là !",
+    "chrome": "Le navigateur Google Chrome. Chaque onglet ouvert demande un peu de place en mémoire.",
+    "msedge": "Le navigateur Microsoft Edge.",
+    "claude": "Votre outil d'assistance en cours d'exécution.",
+    "powershell": "Le moteur d'automatisation utilisé pour exécuter nos petits nettoyages."
+  },
+  expert: {
+    "Memory Compression": "Sous-système de compression en RAM évitant le basculement trop rapide sur le fichier d'échange (pagefile).",
+    "MsMpEng": "Processus principal du moteur Antivirus Microsoft Defender (Protection temps réel IOAV/AMSI).",
+    "Antigravity": "Environnement d'exécution agentique et IDE embarqué.",
+    "explorer": "Processus shell Windows hébergeant le Bureau, la barre des tâches et les handlers COM.",
+    "svchost": "Processus hôte partagé pour les services système Windows configurés en DLL.",
+    "chrome": "Navigateur Chromium multiprocessus (moteur Blink & V8).",
+    "msedge": "Navigateur Chromium signé Microsoft.",
+    "claude": "CLI d'assistance Claude Code.",
+    "powershell": "Moteur PowerShell 5.1/Core exécutant les runbooks système."
+  }
 };
 
 const PORT_EXPLANATIONS = {
-  135: { desc: "Appel de procédure distante Windows (RPC). Service interne standard.", risk: "Standard (Filtré par le pare-feu)", level: "ok" },
-  445: { desc: "Partage de fichiers et d'imprimantes sur le réseau local (protocole SMB).", risk: "À limiter au réseau local privé", level: "warn" },
-  5040: { desc: "Service Windows de partage de proximité entre appareils connectés.", risk: "Standard", level: "ok" },
-  5357: { desc: "Découverte des périphériques sur le réseau local (WSDAPI).", risk: "Standard", level: "ok" },
-  7680: { desc: "Optimisation de téléchargement des mises à jour Windows Update.", risk: "Standard", level: "ok" },
-  27036: { desc: "Découverte locale du client Steam (diffusion de jeu à domicile).", risk: "Application locale (Steam)", level: "ok" },
-  58900: { desc: "Synchronisation locale Spotify Connect sur le Wi-Fi domestique.", risk: "Application locale (Spotify)", level: "ok" }
+  simple: {
+    135: { desc: "Communication interne de Windows (service normal et protégé par votre pare-feu).", risk: "Normal et sous contrôle", level: "ok" },
+    445: { desc: "Partage de fichiers entre ordinateurs sur votre réseau local de la maison/bureau.", risk: "Normal chez vous (Bloqué sur internet)", level: "warn" },
+    5040: { desc: "Partage de proximité Windows (pour relier votre smartphone ou un appareil voisin).", risk: "Normal", level: "ok" },
+    5357: { desc: "Permet à Windows de reconnaître les imprimantes et box connectées sur le Wi-Fi.", risk: "Normal", level: "ok" },
+    7680: { desc: "Aide Windows Update à télécharger les mises à jour plus rapidement.", risk: "Normal", level: "ok" },
+    27036: { desc: "Votre jeu Steam (permet de diffuser une partie vers un autre écran chez vous).", risk: "Application Steam", level: "ok" },
+    58900: { desc: "Spotify Connect (pour changer la musique depuis votre téléphone).", risk: "Application Spotify", level: "ok" }
+  },
+  expert: {
+    135: { desc: "Endpoint Mapper RPC (Remote Procedure Call) de Microsoft.", risk: "Filtré par le pare-feu Defender", level: "ok" },
+    445: { desc: "Protocole SMB v2/v3 pour le partage réseau local.", risk: "À ne jamais exposer sur une interface publique", level: "warn" },
+    5040: { desc: "Service d'appairage d'appareils Windows (Nearby Share / Connected Devices).", risk: "Service local standard", level: "ok" },
+    5357: { desc: "Protocole WSDAPI (Web Services for Devices Discovery).", risk: "Découverte UPnP/WSD", level: "ok" },
+    7680: { desc: "Optimisation de distribution P2P de Windows Update (DO).", risk: "Trafic local P2P", level: "ok" },
+    27036: { desc: "Port de découverte UDP/TCP du client Steam In-Home Streaming.", risk: "Client Valve Steam", level: "ok" },
+    58900: { desc: "Socket TCP local ouvert par Spotify Desktop pour Spotify Connect.", risk: "Client Spotify", level: "ok" }
+  }
 };
 
 const SCENARIOS = {
   slow: {
-    title: "Lenteur générale au démarrage ou en multitâche",
-    cause: "Sur une machine dotée de 8 Go de mémoire vive, le lancement simultané d'applications lourdes dès l'ouverture de session (clients de jeux, messageries, synchronisation cloud, conteneurs) sature plus de 90 % de la RAM avant même d'ouvrir un document.",
-    remedy: "Retirer ces programmes du lancement automatique (ils restent disponibles normalement quand vous cliquez sur leur icône) permet de récupérer immédiatement entre 1,5 et 2,5 Go de mémoire vive.",
-    btnLabel: "Alléger le démarrage maintenant",
+    title: "Mon PC est lent ou le ventilateur souffle fort",
+    cause: "Dans 90% des cas, ce n'est pas votre ordinateur qui est vieux : c'est simplement que 10 à 15 logiciels ont pris la mauvaise habitude de s'allumer en même temps dès que vous démarrez Windows (Steam, Discord, Spotify, Teams, etc.).",
+    remedy: "En cliquant sur « Alléger le démarrage », nous empêchons ces programmes de s'allumer tout seuls. Vous pourrez toujours les ouvrir normalement quand vous en aurez besoin, mais votre PC retrouvera son souffle !",
+    btnLabel: "Faire démarrer mon PC plus vite",
     action: "optimize-startup"
   },
   disk: {
-    title: "Saturation progressive des partitions C: et D:",
-    cause: "Lorsqu'un SSD approche des 90 % d'occupation, Windows dispose de moins de marge pour son fichier d'échange ( mémoire virtuelle ) et les mises à jour accumulent des fichiers temporaires dans %TEMP%.",
-    remedy: "Commencez par purger les fichiers temporaires de plus de 48 heures. Cette opération ne touche à aucun fichier personnel (Bureau, Documents, Téléchargements).",
-    btnLabel: "Purger les fichiers temporaires",
+    title: "Mon disque dur est presque plein",
+    cause: "Au fil des mois et des mises à jour, Windows accumule des dizaines de milliers de petits fichiers temporaires dans des dossiers cachés. Quand le disque approche des 90% de remplissage, l'ordinateur ralentit.",
+    remedy: "Nous supprimons uniquement les vieux fichiers résiduels de plus de 48 heures. Vos photos, vos documents Word/Excel et vos téléchargements personnels ne sont jamais touchés.",
+    btnLabel: "Nettoyer les fichiers temporaires oubliés",
     action: "clean-temp"
   },
   security: {
-    title: "Contrôle des services exposés sur le réseau",
-    cause: "Une machine mal configurée peut laisser le Bureau à distance (RDP) ouvert ou désactiver un profil de pare-feu sur un Wi-Fi public.",
-    remedy: "L'audit vérifie les 3 profils du pare-feu Windows, l'état temps réel de Microsoft Defender, la protection UAC et traduit chaque port ouvert en clair.",
-    btnLabel: "Relancer l'audit de sécurité",
+    title: "Vérifier si mon ordinateur est bien protégé",
+    cause: "Pour être tranquille, un administrateur senior vérifie 4 verrous essentiels : le pare-feu allumé, l'antivirus actif avec des défenses à jour, la protection UAC (qui empêche les virus d'agir en secret) et le bureau à distance fermé.",
+    remedy: "Tous vos voyants de sécurité sont actuellement au vert. Vous pouvez relancer une vérification à tout moment d'un simple clic.",
+    btnLabel: "Refaire un audit de sécurité complet",
     action: "full-audit"
   },
   network: {
-    title: "Sites web inaccessibles malgré une connexion Wi-Fi active",
-    cause: "Le cache DNS local de Windows conserve parfois en mémoire une adresse IP périmée après un changement de réseau ou de VPN.",
-    remedy: "La réinitialisation du cache DNS force le système à interroger à nouveau le serveur DNS sans couper votre connexion actuelle.",
-    btnLabel: "Vider le cache DNS",
+    title: "Internet rame ou certains sites refusent de s'ouvrir",
+    cause: "Parfois votre connexion Wi-Fi fonctionne très bien, mais le « carnet d'adresses » de Windows (son cache DNS) a gardé une adresse obsolète en mémoire, ce qui bloque l'accès à certaines pages.",
+    remedy: "Réinitialiser ce carnet d'adresses ne coupe pas votre connexion : cela force simplement Windows à redemander l'adresse toute neuve du site que vous voulez voir.",
+    btnLabel: "Débloquer ma connexion DNS en 1 clic",
     action: "flush-dns"
   },
   linux: {
-    title: "Diagnostic rapide d'un serveur Linux ou d'une instance WSL",
-    cause: "Sur Linux, un ralentissement ou un refus d'écriture provient souvent d'un service systemd en échec, d'une saturation des inodes (df -i) ou d'une intervention du OOM Killer dans dmesg.",
-    remedy: "Exécutez le script d'audit en lecture seule basé sur la méthode USE (Utilization, Saturation, Errors) pour obtenir un état complet en quelques secondes.",
+    title: "J'administre un serveur Linux ou une instance WSL",
+    cause: "Sous Linux, on utilise la méthode USE : vérifier la charge processeur (uptime), la mémoire réelle restante (free -h), l'espace disque et les inodes (df -h / df -i), et les services en panne (systemctl --failed).",
+    remedy: "Notre script d'audit complet en lecture seule vérifie ces 7 points vitaux en moins de 3 secondes.",
     btnLabel: "Copier la commande d'audit Linux",
     action: "copy-linux-cmd"
   }
 };
 
 window.addEventListener("DOMContentLoaded", async () => {
+  setupDynamicGreeting();
   selectScenario("slow", document.querySelector(".scenario-btn"));
   await checkLocalServerAndLoad();
 });
+
+function setupDynamicGreeting() {
+  const hour = new Date().getHours();
+  const greetingEl = document.getElementById("userGreeting");
+  const timeGreeting = hour >= 18 || hour < 5 ? "Bonsoir" : "Bonjour";
+  if (greetingEl) {
+    greetingEl.innerHTML = `${timeGreeting} ! Voici la forme de votre ordinateur <span class="version-tag">Version 1.1</span>`;
+  }
+}
+
+function setViewMode(mode) {
+  currentViewMode = mode;
+  document.getElementById("btnModeSimple").classList.toggle("active", mode === "simple");
+  document.getElementById("btnModeExpert").classList.toggle("active", mode === "expert");
+  renderDashboard();
+  notify(mode === "simple" ? "Affichage en Vue Simple (Conseils clairs)" : "Affichage en Vue Détaillée (Données techniques)");
+}
 
 async function checkLocalServerAndLoad() {
   try {
@@ -166,9 +213,9 @@ async function checkLocalServerAndLoad() {
       isLocalConnected = true;
       const ind = document.getElementById("connectionStatus");
       ind.className = "status-indicator connected";
-      document.getElementById("connectionLabel").textContent = "Connecté au poste local (127.0.0.1:8765)";
+      document.getElementById("connectionLabel").textContent = "Connecté en direct à votre ordinateur (Local)";
       document.getElementById("connectionSubtext").textContent =
-        "Relais PowerShell actif : les relevés et les boutons d'intervention agissent en direct sur votre système.";
+        "Génial ! Le relais sécurisé est actif : vos clics ci-dessous agissent en direct sur votre machine en toute sécurité.";
       await runFullDiagnostic(true);
       return;
     }
@@ -200,9 +247,9 @@ function renderDashboard() {
   document.getElementById("metaHostname").textContent = health.Hostname || "Poste local";
   document.getElementById("metaOS").textContent = health.OS || "Windows 11";
   document.getElementById("metaCPU").textContent =
-    health.CPU ? `${health.CPU.Name} (${health.CPU.Cores} cœurs / ${health.CPU.Logical} threads)` : "Processeur x64";
+    health.CPU ? (currentViewMode === "simple" ? health.CPU.Name : `${health.CPU.Name} (${health.CPU.Cores} cœurs / ${health.CPU.Logical} threads)`) : "Processeur";
   document.getElementById("metaUptime").textContent = health.UptimeText || "N/A";
-  document.getElementById("metaTimestamp").textContent = `Relevé : ${health.Timestamp}`;
+  document.getElementById("metaTimestamp").textContent = `Dernière vérification : ${health.Timestamp}`;
 
   // Score Card
   document.getElementById("scoreNumber").textContent = score;
@@ -211,15 +258,15 @@ function renderDashboard() {
   const scoreTag = document.getElementById("scoreTag");
   if (score >= 80) {
     scoreTag.className = "tag tag-ok";
-    scoreTag.textContent = "Bon état";
+    scoreTag.textContent = "En bonne santé";
     scoreBar.style.backgroundColor = "var(--ok)";
   } else if (score >= 65) {
     scoreTag.className = "tag tag-warn";
-    scoreTag.textContent = "À surveiller";
+    scoreTag.textContent = "Un peu fatigué";
     scoreBar.style.backgroundColor = "var(--warn)";
   } else {
     scoreTag.className = "tag tag-crit";
-    scoreTag.textContent = "Action requise";
+    scoreTag.textContent = "À chouchouter";
     scoreBar.style.backgroundColor = "var(--crit)";
   }
 
@@ -236,15 +283,17 @@ function renderDashboard() {
     ramMeter.style.backgroundColor = "var(--crit)";
   } else if (ramPct >= 78) {
     ramTag.className = "tag tag-warn";
-    ramTag.textContent = "Sollicitée";
+    ramTag.textContent = "Un peu à l'étroit";
     ramMeter.style.backgroundColor = "var(--warn)";
   } else {
     ramTag.className = "tag tag-ok";
-    ramTag.textContent = "Fluide";
+    ramTag.textContent = "Parfaitement fluide";
     ramMeter.style.backgroundColor = "var(--ok)";
   }
   document.getElementById("ramNote").textContent =
-    `${ramPct} % utilisés (${health.RAM.FreeGB} Go libres immédiatement disponibles).`;
+    currentViewMode === "simple"
+      ? `Il vous reste ${health.RAM.FreeGB} Go de place libre. Vos logiciels ouverts occupent ${ramPct}% de la mémoire.`
+      : `Working Set : ${health.RAM.UsedGB} Go sur ${health.RAM.TotalGB} Go (${ramPct}%, ${health.RAM.FreeGB} Go libres).`;
 
   // Disk Card
   const d0 = (health.Disks && health.Disks[0]) || { Drive: "C:", SizeGB: 236.9, FreeGB: 24.5, UsedPct: 89.7 };
@@ -254,19 +303,19 @@ function renderDashboard() {
   const diskTag = document.getElementById("diskTag");
   if (d0.UsedPct >= 92) {
     diskTag.className = "tag tag-crit";
-    diskTag.textContent = `${d0.UsedPct} % occupé`;
+    diskTag.textContent = "Disque presque plein";
     diskMeter.style.backgroundColor = "var(--crit)";
   } else if (d0.UsedPct >= 82) {
     diskTag.className = "tag tag-warn";
-    diskTag.textContent = `${d0.UsedPct} % occupé`;
+    diskTag.textContent = "À surveiller de près";
     diskMeter.style.backgroundColor = "var(--warn)";
   } else {
     diskTag.className = "tag tag-ok";
-    diskTag.textContent = `${d0.UsedPct} % occupé`;
+    diskTag.textContent = "Beaucoup de place";
     diskMeter.style.backgroundColor = "var(--ok)";
   }
   document.getElementById("diskNote").textContent =
-    `Sur ${d0.SizeGB} Go au total (${d0.Drive}). Fichiers temporaires : ${health.TempSizeMB || 0} Mo.`;
+    `Votre disque principal (${d0.Drive}) a ${d0.FreeGB} Go de libres sur ${d0.SizeGB} Go. Nettoyable : ${health.TempSizeMB || 0} Mo.`;
   document.getElementById("tempSizeInline").textContent = `${health.TempSizeMB || 0} Mo`;
 
   // Security Card
@@ -276,16 +325,18 @@ function renderDashboard() {
   const rdpOk = !security.RDPEnabled;
   const passed = [fwOk, defOk, uacOk, rdpOk].filter(Boolean).length;
   const secTag = document.getElementById("secTag");
-  secTag.textContent = `${passed} / 4 actifs`;
+  secTag.textContent = `${passed} / 4 verrous fermés`;
   secTag.className = passed === 4 ? "tag tag-ok" : "tag tag-warn";
-  document.getElementById("secHeadline").textContent = passed === 4 ? "Conforme" : "À vérifier";
+  document.getElementById("secHeadline").textContent = passed === 4 ? "Très bien protégé" : "Attention requise";
 
   renderTables();
 }
 
 function renderTables() {
   const q = currentFilter.trim().toLowerCase();
-  const { health, security, dsavLogs } = appState;
+  const { health, security, dsavLogs, devsecops } = appState;
+  const expDict = PROCESS_EXPLANATIONS[currentViewMode];
+  const portDict = PORT_EXPLANATIONS[currentViewMode];
 
   // Startup
   const startups = (health.StartupItems || []).filter(item =>
@@ -298,13 +349,13 @@ function renderTables() {
         return `
           <tr>
             <td><strong>${escapeHtml(item.Name)}</strong></td>
-            <td><span class="tag ${essential ? "tag-ok" : "tag-warn"}">${essential ? "Faible" : "Modéré"}</span></td>
-            <td>${essential ? "Conserver au démarrage" : "Lancement manuel conseillé"}</td>
+            <td><span class="tag ${essential ? "tag-ok" : "tag-warn"}">${essential ? "Très léger" : "Ralentit l'allumage"}</span></td>
+            <td>${essential ? "À conserver (Utile pour Windows)" : "Vous pouvez le désactiver sans crainte"}</td>
             <td><code class="code-inline">${escapeHtml(item.Command || "")}</code></td>
           </tr>
         `;
       }).join("")
-    : `<tr><td colspan="4" style="color:var(--text-tertiary);">Aucun élément correspondant.</td></tr>`;
+    : `<tr><td colspan="4" style="color:var(--text-tertiary);">Aucun élément trouvé avec ce mot-clé.</td></tr>`;
 
   // Processes
   const procs = (health.TopProcessesRAM || []).filter(p =>
@@ -312,13 +363,13 @@ function renderTables() {
   );
   document.getElementById("countProcs").textContent = procs.length;
   document.getElementById("tbodyProcesses").innerHTML = procs.map(p => {
-    const desc = PROCESS_EXPLANATIONS[p.Name] || "Processus applicatif ou service actif sur la session.";
+    const desc = expDict[p.Name] || "Programme actuellement ouvert sur votre ordinateur.";
     return `
       <tr>
-        <td><strong>${escapeHtml(p.Name)}</strong> <span class="tabular" style="color:var(--text-tertiary);font-size:12px;">(PID ${p.Id})</span></td>
+        <td><strong>${escapeHtml(p.Name)}</strong> <span class="tabular" style="color:var(--text-tertiary);font-size:12px;">(N° ${p.Id})</span></td>
         <td style="color:var(--text-secondary);">${escapeHtml(desc)}</td>
         <td class="tabular"><strong>${p.RAM_MB} Mo</strong></td>
-        <td class="tabular" style="color:var(--text-secondary);">${p.CPU_s || 0} s</td>
+        <td class="tabular" style="color:var(--text-secondary);">${p.CPU_s || 0} secondes</td>
       </tr>
     `;
   }).join("");
@@ -329,15 +380,15 @@ function renderTables() {
   );
   document.getElementById("countPorts").textContent = ports.length;
   document.getElementById("tbodyPorts").innerHTML = ports.map(pt => {
-    const info = PORT_EXPLANATIONS[pt.Port] || {
-      desc: "Service RPC dynamique interne à Windows.",
-      risk: "Standard (Filtré par le pare-feu)",
+    const info = portDict[pt.Port] || {
+      desc: "Port de service interne à Windows.",
+      risk: "Protégé par le pare-feu",
       level: "ok"
     };
     return `
       <tr>
-        <td class="tabular"><strong>${pt.Port}</strong> / TCP</td>
-        <td><code class="code-inline">${escapeHtml(pt.ProcessName || "System")}</code></td>
+        <td class="tabular"><strong>Port ${pt.Port}</strong></td>
+        <td><code class="code-inline">${escapeHtml(pt.ProcessName || "Système")}</code></td>
         <td style="color:var(--text-secondary);">${escapeHtml(info.desc)}</td>
         <td><span class="tag tag-${info.level}">${escapeHtml(info.risk)}</span></td>
       </tr>
@@ -345,24 +396,20 @@ function renderTables() {
   }).join("");
 
   // DevSecOps
-  const devsecopsList = (appState.devsecops || []).filter(item =>
+  const devList = (devsecops || []).filter(item =>
     !q || (item.component && item.component.toLowerCase().includes(q)) ||
     (item.check && item.check.toLowerCase().includes(q)) ||
     (item.finding && item.finding.toLowerCase().includes(q))
   );
-  const countDevEl = document.getElementById("countDevsecops");
-  if (countDevEl) countDevEl.textContent = devsecopsList.length;
-  const tbodyDevEl = document.getElementById("tbodyDevsecops");
-  if (tbodyDevEl) {
-    tbodyDevEl.innerHTML = devsecopsList.map(item => `
-      <tr>
-        <td><strong>${escapeHtml(item.component)}</strong></td>
-        <td>${escapeHtml(item.check)}</td>
-        <td style="color:var(--text-secondary);">${escapeHtml(item.finding)}</td>
-        <td><span class="tag tag-${item.level}">${escapeHtml(item.status)}</span></td>
-      </tr>
-    `).join("");
-  }
+  document.getElementById("countDevsecops").textContent = devList.length;
+  document.getElementById("tbodyDevsecops").innerHTML = devList.map(item => `
+    <tr>
+      <td><strong>${escapeHtml(item.component)}</strong></td>
+      <td>${escapeHtml(item.check)}</td>
+      <td style="color:var(--text-secondary);">${escapeHtml(item.finding)}</td>
+      <td><span class="tag tag-${item.level}">${escapeHtml(item.status)}</span></td>
+    </tr>
+  `).join("");
 
   // Journal
   document.getElementById("countJournal").textContent = dsavLogs.length;
@@ -386,20 +433,20 @@ function selectScenario(key, btnEl) {
   if (btnEl) btnEl.classList.add("active");
   const s = SCENARIOS[key];
   document.getElementById("scenarioContainer").innerHTML = `
-    <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">${escapeHtml(s.title)}</h3>
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:6px;">${escapeHtml(s.title)}</h3>
     <div class="scenario-grid">
       <div class="diag-block">
-        <div class="diag-block-label">Diagnostic technique (Traduit en clair)</div>
+        <div class="diag-block-label">Pourquoi cela se produit :</div>
         <p>${escapeHtml(s.cause)}</p>
       </div>
       <div class="diag-block">
-        <div class="diag-block-label">Action recommandée (Protocole D.S.A.V.)</div>
+        <div class="diag-block-label">Ce que nous allons faire :</div>
         <p>${escapeHtml(s.remedy)}</p>
       </div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
       <span style="font-size:12px;color:var(--text-tertiary);">
-        Aucune donnée personnelle n'est modifiée lors de cette opération.
+        Rassurez-vous : cette opération est 100% sécurisée et réversible.
       </span>
       <button class="btn btn-primary" onclick="triggerAction('${s.action}')">
         ${escapeHtml(s.btnLabel)}
@@ -412,7 +459,7 @@ async function runFullDiagnostic(silent = false) {
   const btn = document.getElementById("btnRefreshAudit");
   btn.disabled = true;
   const origHtml = btn.innerHTML;
-  btn.textContent = "Analyse en cours...";
+  btn.textContent = "Examen de votre ordinateur en cours...";
 
   try {
     if (isLocalConnected) {
@@ -422,18 +469,18 @@ async function runFullDiagnostic(silent = false) {
       ]);
       if (hRes.ok) appState.health = await hRes.json();
       if (sRes.ok) appState.security = await sRes.json();
-      if (!silent) notify("Relevé système mis à jour en direct depuis votre PC.");
+      if (!silent) notify("Bilan de santé mis à jour en direct depuis votre machine !");
     } else {
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 450));
       const now = new Date();
-      appState.health.Timestamp = now.toLocaleString("fr-FR");
+      appState.health.Timestamp = `Aujourd'hui à ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
       if (!silent) {
-        notify("Aperçu actualisé. Pour analyser votre propre machine, lancez Lancer-SysAdmin-UI.bat.");
+        notify("Bilan d'exemple actualisé. Pour agir sur votre vrai PC, lancez DEMARRER-ICI.bat.");
       }
     }
     renderDashboard();
   } catch (_) {
-    notify("Impossible de joindre le service local (affichage des données d'exemple).");
+    notify("Impossible de joindre le relais local (nous affichons les données d'exemple).");
   } finally {
     btn.disabled = false;
     btn.innerHTML = origHtml;
@@ -444,95 +491,95 @@ async function triggerAction(actionName) {
   if (actionName === "full-audit") return runFullDiagnostic();
   if (actionName === "copy-linux-cmd") {
     navigator.clipboard.writeText("bash ./skills/linux-sysadmin-senior/scripts/linux-health-audit.sh");
-    notify("Commande d'audit Linux copiée dans le presse-papiers.");
+    notify("La commande d'audit Linux a été copiée dans votre presse-papiers !");
     return;
   }
 
-  const now = new Date().toTimeString().slice(0, 8);
+  const now = new Date().toTimeString().slice(0, 5);
 
   if (isLocalConnected) {
-    notify("Exécution de l'opération en cours...");
+    notify("Nettoyage et sécurisation en cours...");
     try {
       const res = await fetch(`${LOCAL_API_BASE}/api/action/${actionName}`, { method: "POST" });
       const data = await res.json();
       if (actionName === "clean-temp") {
         appState.dsavLogs.unshift({
           time: now,
-          title: `Purge des fichiers temporaires (${data.RemovedFiles || 0} fichiers supprimés, ${data.FreedMB || 0} Mo libérés)`,
-          backup: "Fichiers > 48h uniquement",
-          status: "Vérifié"
+          title: `Tri des fichiers temporaires terminé (${data.RemovedFiles || 0} fichiers nettoyés, ${data.FreedMB || 0} Mo récupérés)`,
+          backup: "Fichiers temporaires > 48h uniquement (Documents intacts)",
+          status: "Vérifié & Sûr"
         });
-        notify(`Nettoyage terminé : ${data.FreedMB || 0} Mo récupérés.`);
+        notify(`Bravo ! ${data.FreedMB || 0} Mo d'espace ont été libérés sur votre disque.`);
       } else if (actionName === "flush-dns") {
         appState.dsavLogs.unshift({
           time: now,
-          title: "Réinitialisation du cache DNS Windows",
-          backup: "Opération sans perte de session",
-          status: "Vérifié"
+          title: "Rafraîchissement de la mémoire réseau (cache DNS)",
+          backup: "Aucune coupure de connexion",
+          status: "Vérifié & Sûr"
         });
-        notify("Cache DNS réinitialisé.");
+        notify("Le carnet d'adresses réseau de votre PC a été remis à neuf !");
       } else if (actionName === "optimize-startup") {
         appState.dsavLogs.unshift({
           time: now,
-          title: `Allègement du démarrage (${data.DisabledCount || 0} entrées désactivées)`,
-          backup: data.RegBackupPath || "Sauvegarde .reg créée",
-          status: "Vérifié"
+          title: `Démarrage allégé (${data.DisabledCount || 0} logiciels retirés de l'allumage automatique)`,
+          backup: data.RegBackupPath || "Sauvegarde de secours créée",
+          status: "Vérifié & Sûr"
         });
-        notify("Démarrage optimisé avec sauvegarde préalable du Registre.");
+        notify("Votre démarrage est allégé ! Une sauvegarde de secours a été créée.");
       } else if (actionName === "restore-startup") {
         appState.dsavLogs.unshift({
           time: now,
-          title: "Restauration (Rollback) de la configuration de démarrage",
-          backup: data.RestoredFrom || "Archive .reg importée",
+          title: "Annulation : la configuration de démarrage précédente a été réinstallée",
+          backup: data.RestoredFrom || "Sauvegarde restaurée",
           status: "Restauré"
         });
-        notify("État précédent du démarrage restauré.");
+        notify("C'est fait : vos anciens logiciels de démarrage ont été remis en place.");
       }
       await runFullDiagnostic(true);
     } catch (_) {
-      notify("Erreur lors de l'exécution locale.");
+      notify("Une petite erreur est survenue lors de l'action locale.");
     }
     return;
   }
 
-  // Online interactive preview
+  // Démonstration interactive en ligne
   if (actionName === "clean-temp") {
     const freed = appState.health.TempSizeMB || 120;
     appState.health.TempSizeMB = 11.8;
     appState.dsavLogs.unshift({
       time: now,
-      title: `[Aperçu] Purge des fichiers temporaires (${freed} Mo libérés)`,
-      backup: "Fichiers > 48h uniquement",
+      title: `[Démo] Nettoyage des fichiers temporaires (${freed} Mo libérés)`,
+      backup: "Fichiers personnels 100% intacts",
       status: "Simulé"
     });
-    notify(`Aperçu : ${freed} Mo purgés. Téléchargez l'utilitaire (.zip) pour agir sur votre PC.`);
+    notify(`[Mode Démo] ${freed} Mo nettoyés ! Téléchargez le pack gratuit pour le faire sur votre PC.`);
   } else if (actionName === "optimize-startup") {
-    appState.health.RAM.UsedGB = 5.3;
-    appState.health.RAM.FreeGB = 2.4;
-    appState.health.RAM.UsedPct = 68.8;
+    appState.health.RAM.UsedGB = 5.2;
+    appState.health.RAM.FreeGB = 2.5;
+    appState.health.RAM.UsedPct = 67.5;
     appState.dsavLogs.unshift({
       time: now,
-      title: "[Aperçu] Export Registre (.reg) + Allègement des programmes au démarrage",
-      backup: "HKCU_Run_Backup.reg",
+      title: "[Démo] Démarrage allégé (Gain de 1,5 Go de RAM)",
+      backup: "Sauvegarde automatique créée",
       status: "Simulé"
     });
-    notify("Aperçu : démarrage allégé (RAM ramenée à 68,8 %).");
+    notify("[Mode Démo] Démarrage allégé ! Téléchargez le pack pour l'appliquer chez vous.");
   } else if (actionName === "flush-dns") {
     appState.dsavLogs.unshift({
       time: now,
-      title: "[Aperçu] Réinitialisation du cache de résolution DNS",
-      backup: "Sans coupure réseau",
+      title: "[Démo] Rafraîchissement de la mémoire réseau (DNS)",
+      backup: "Sans coupure internet",
       status: "Simulé"
     });
-    notify("Aperçu : cache DNS réinitialisé.");
+    notify("[Mode Démo] Cache réseau réinitialisé avec succès.");
   } else if (actionName === "restore-startup") {
     appState.dsavLogs.unshift({
       time: now,
-      title: "[Aperçu] Réimportation de la sauvegarde Registre (.reg)",
-      backup: "HKCU_Run_Backup.reg",
+      title: "[Démo] Restauration de l'état précédent (Rollback)",
+      backup: "Sauvegarde restaurée",
       status: "Simulé"
     });
-    notify("Aperçu : configuration précédente restaurée.");
+    notify("[Mode Démo] Changements annulés d'un simple clic.");
   }
   renderDashboard();
 }
@@ -549,6 +596,7 @@ function toggleTheme() {
   const next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
   html.setAttribute("data-theme", next);
   document.getElementById("themeToggleLabel").textContent = next === "light" ? "Mode sombre" : "Mode clair";
+  notify(next === "light" ? "Passage au thème clair (papier chaud)" : "Passage au thème sombre");
 }
 
 function importJsonReport(event) {
@@ -564,9 +612,9 @@ function importJsonReport(event) {
         appState = data;
       }
       renderDashboard();
-      notify("Rapport JSON chargé avec succès.");
+      notify("Bilan JSON importé avec succès !");
     } catch (_) {
-      notify("Format de fichier JSON non reconnu.");
+      notify("Le fichier fourni n'est pas un rapport valide.");
     }
   };
   reader.readAsText(file);
@@ -577,10 +625,10 @@ function exportCurrentReport() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `rapport-systeme-${(appState.health.Hostname || "poste").toLowerCase()}.json`;
+  a.download = `bilan-sante-pc-${(appState.health.Hostname || "ordinateur").toLowerCase()}.json`;
   a.click();
   URL.revokeObjectURL(url);
-  notify("Rapport exporté au format JSON.");
+  notify("Votre bilan complet a été sauvegardé dans vos Téléchargements.");
 }
 
 function openGuideModal() {

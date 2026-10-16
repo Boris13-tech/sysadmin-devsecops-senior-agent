@@ -9,7 +9,7 @@
       <img src="https://img.shields.io/badge/%F0%9F%8C%90_Ouvrir_l'Application_Web_en_Ligne-Live_UI%2FUX-0284c7?style=for-the-badge" alt="Ouvrir l'application Web en ligne" />
     </a>
     &nbsp;
-    <a href="https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent/releases/latest/download/SysAdmin-DevSecOps-Senior-Tool-v1.0.0.zip">
+    <a href="https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent/releases/latest/download/SysAdmin-DevSecOps-Senior-Tool-v1.1.0.zip">
       <img src="https://img.shields.io/badge/%F0%9F%93%A5_T%C3%A9l%C3%A9charger_l'Outil_PC_(.ZIP)-Double--Clic_Windows-10b981?style=for-the-badge" alt="Télécharger l'outil PC (.ZIP)" />
     </a>
   </p>
@@ -17,24 +17,23 @@
 
 ---
 
-## 🌟 2 Modes d'Utilisation pour un Utilisateur Lambda (Débutant)
+## 🌟 2 Façons Très Simples d'Utiliser l'Outil
 
-### 1️⃣ Utiliser l'Application En Ligne (Sans rien installer)
-👉 **[Cliquez ici pour ouvrir le Centre de Contrôle Interactif en ligne](https://boris13-tech.github.io/sysadmin-devsecops-senior-agent/)**
-- Explorez le tableau de bord visuel (Score de santé sur 100, jauges Mémoire RAM, Disques, Bouclier de sécurité).
-- Utilisez l'**Assistant Interactif « Docteur Système »** en cliquant simplement sur ce que vous ressentez (*"🐢 Mon PC est lent"*, *"💾 Mon disque est plein"*, *"🛡️ Vérifier ma sécurité"*, *"🌍 Internet bloque"*).
-- Importez ou exportez un bilan JSON en 1 clic.
+### 1️⃣ Découvrir en Ligne (Sans rien installer sur votre PC)
+👉 **[Ouvrir le Poste de Contrôle en ligne (GitHub Pages)](https://boris13-tech.github.io/sysadmin-devsecops-senior-agent/)**
+- Visualisez l'état de santé type avec explications douces et rassurantes.
+- Testez les scénarios du **« Docteur PC »** (*"Mon PC rame"*, *"Disque presque plein"*, *"Vérifier ma sécurité"*).
+- Basculez entre la **Vue Simple (Conseils clairs)** et la **Vue Détaillée (Technique)**.
 
-### 2️⃣ Télécharger l'Outil sur votre PC (Action en Direct en 1 Clic)
-👉 **[Téléchargez `SysAdmin-DevSecOps-Senior-Tool-v1.0.0.zip` (Release Officielle)](https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent/releases/latest/download/SysAdmin-DevSecOps-Senior-Tool-v1.0.0.zip)**
-1. **Extrayez le fichier `.ZIP`** sur votre Bureau ou dans vos Téléchargements.
-2. **Double-cliquez sur `Lancer-SysAdmin-UI.bat`** (sous Windows) ou `lancer-sysadmin-ui.sh` (sous Linux).
-3. L'interface graphique s'ouvre toute seule dans votre navigateur avec le badge **🟢 Connecté en Direct à votre PC** :
-   - **🔍 Diagnostic Complet en 1 clic** (CPU, RAM, Disques, Pare-feu, Antivirus, Ports ouverts traduits en français simple).
-   - **🚀 Alléger le Démarrage Windows en 1 clic** (sauvegarde automatique du Registre `.reg` + désactivation des logiciels lourds au démarrage).
-   - **🧹 Nettoyer les Fichiers Inutiles en 1 clic** (sans jamais toucher à vos documents personnels).
-   - **🌐 Réparer Internet / Vider le Cache DNS en 1 clic**.
-   - **⏪ Bouton d'Annulation (Rollback 1-Clic)** pour revenir à l'état exact précédent à tout moment.
+### 2️⃣ Lancer sur votre Propre PC en 2 Clics
+👉 **[Télécharger le pack gratuit `SysAdmin-DevSecOps-Senior-Tool-v1.1.0.zip`](https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent/releases/latest/download/SysAdmin-DevSecOps-Senior-Tool-v1.1.0.zip)**
+1. **Extrayez le fichier `.ZIP`** téléchargé (clic-droit > *Extraire tout*).
+2. **Double-cliquez sur `DEMARRER-ICI.bat`** (ou lancez `lancer-sysadmin-ui.sh` sous Linux).
+3. Votre navigateur s'ouvre automatiquement avec le voyant vert **Connecté en direct à votre ordinateur** :
+   - Nettoyez les fichiers temporaires inutiles d'un simple clic.
+   - Allégez le démarrage pour que votre PC s'allume plus vite (sauvegarde de secours créée automatiquement).
+   - Débloquez votre connexion internet en cas de souci.
+   - *(Optionnel)* Double-cliquez sur **`Creer-Raccourci-Bureau.bat`** pour installer une icône sur votre Bureau Windows !
 
 ---
 

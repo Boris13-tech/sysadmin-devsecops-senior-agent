@@ -1,0 +1,37 @@
+========================================================================
+   POSTE DE CONTRÔLE SYSTÈME — GUIDE DE DÉMARRAGE RAPIDE EN 30 SECONDES
+========================================================================
+
+Bonjour ! Cet outil a été conçu pour vous aider à garder votre PC rapide,
+propre et sécurisé, même si vous n'y connaissez rien en informatique.
+
+------------------------------------------------------------------------
+COMMENT LE LANCER EN 2 CLICS :
+------------------------------------------------------------------------
+
+1. Décompressez ce dossier (si ce n'est pas déjà fait) :
+   Faites un clic-droit sur le fichier .zip téléchargé > "Extraire tout".
+
+2. Double-cliquez sur le fichier :
+   -->  DEMARRER-ICI.bat  <--
+
+3. C'est tout ! Votre navigateur internet habituel va s'ouvrir
+   automatiquement avec votre tableau de bord.
+
+ASTUCE :
+Pour avoir l'outil directement sous la main à tout moment, double-cliquez
+sur "Creer-Raccourci-Bureau.bat" : une icône apparaîtra sur votre Bureau Windows.
+
+------------------------------------------------------------------------
+EST-CE DANGEREUX POUR MES DOCUMENTS ?
+------------------------------------------------------------------------
+NON, AUCUN RISQUE :
+- Vos photos, documents, vidéos et téléchargements personnels restent
+  100% intacts.
+- Avant chaque action importante (comme alléger le démarrage), l'outil
+  crée automatiquement une sauvegarde pour vous permettre d'annuler
+  d'un simple clic si vous changez d'avis.
+
+Créé avec soin par Boris Owandja (@Boris13-tech)
+Support & mises à jour : https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent
+========================================================================

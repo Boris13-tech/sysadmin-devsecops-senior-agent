@@ -201,6 +201,49 @@ body {
   flex-wrap: wrap;
 }
 
+/* Segmented View Toggle (Simple vs Expert) */
+.view-switch {
+  display: inline-flex;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 2px;
+}
+
+.view-switch-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.view-switch-btn.active {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+/* Friendly Analogy Box */
+.analogy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  background-color: var(--bg-subtle);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
