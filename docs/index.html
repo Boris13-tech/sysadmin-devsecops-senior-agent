@@ -87,7 +87,15 @@
         </label>
 
         <button class="btn" onclick="exportCurrentReport()">
-          Exporter le rapport
+          Exporter JSON
+        </button>
+        <button class="btn" onclick="window.print()" title="Imprimer ou enregistrer en PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Imprimer / PDF
         </button>
       </div>
     </header>
@@ -294,6 +302,9 @@
             <button class="nav-tab" onclick="switchTab('view-ports', this)">
               Ports réseau ouverts (<span id="countPorts" class="tabular">5</span>)
             </button>
+            <button class="nav-tab" onclick="switchTab('view-devsecops', this)">
+              Conteneurs &amp; DevSecOps (<span id="countDevsecops" class="tabular">4</span>)
+            </button>
             <button class="nav-tab" onclick="switchTab('view-journal', this)">
               Historique &amp; sauvegardes (<span id="countJournal" class="tabular">2</span>)
             </button>
@@ -362,7 +373,25 @@
           </table>
         </div>
 
-        <!-- View 4: DSAV Journal -->
+        <!-- View 4: DevSecOps -->
+        <div id="view-devsecops" class="tab-view">
+          <div class="table-context-bar">
+            Audit de conformité des conteneurs Docker, privilèges d'exécution, volumes orphelins et posture Kubernetes.
+          </div>
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Composant</th>
+                <th>Vérification de sécurité</th>
+                <th>Constat technique</th>
+                <th>Conformité</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyDevsecops"></tbody>
+          </table>
+        </div>
+
+        <!-- View 5: DSAV Journal -->
         <div id="view-journal" class="tab-view">
           <div class="table-context-bar">
             Journal d'audit suivant la méthode D.S.A.V. (Diagnostic → Sauvegarde → Action → Vérification).

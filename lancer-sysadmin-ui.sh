@@ -7,14 +7,12 @@ PORT=8765
 echo "=================================================================="
 echo "  SENIOR SYSADMIN & DEVSECOPS — INTERFACE GRAPHIQUE INTERACTIVE"
 echo "=================================================================="
-echo "  Ouverture sur : http://127.0.0.1:$PORT"
+echo "  Lancement du relais local sur : http://127.0.0.1:$PORT"
 echo "=================================================================="
 
-if command -v xdg-open >/dev/null 2>&1; then
-  xdg-open "http://127.0.0.1:$PORT" >/dev/null 2>&1 &
-elif command -v open >/dev/null 2>&1; then
-  open "http://127.0.0.1:$PORT" >/dev/null 2>&1 &
+if command -v python3 >/dev/null 2>&1; then
+  python3 "$SCRIPT_DIR/server/start-ui-server.py"
+else
+  echo "Python 3 n'est pas détecté. Veuillez installer Python 3 pour exécuter le serveur local."
+  exit 1
 fi
-
-cd "$SCRIPT_DIR/docs"
-python3 -m http.server "$PORT" --bind 127.0.0.1

@@ -48,6 +48,36 @@ let appState = {
       { Port: 58900, PID: 9748, ProcessName: "SpotifyLauncher" }
     ]
   },
+  devsecops: [
+    {
+      component: "Démon Docker",
+      check: "Mode d'exécution et droits socket",
+      finding: "Docker Desktop (WSL2 Engine) — Accès restreint aux administrateurs locaux",
+      status: "Conforme",
+      level: "ok"
+    },
+    {
+      component: "Privilèges Conteneurs",
+      check: "Exécution non-root & Flag --privileged",
+      finding: "Aucun conteneur détecté en mode privilégié (--privileged)",
+      status: "Conforme",
+      level: "ok"
+    },
+    {
+      component: "Volumes & Images",
+      check: "Ressources orphelines (dangling)",
+      finding: "Nettoyage périodique conseillé (docker image/volume prune)",
+      status: "À surveiller",
+      level: "warn"
+    },
+    {
+      component: "Kubernetes (kubectl)",
+      check: "Pod Security Standards & Contextes",
+      finding: "kubectl détecté — isolation des namespaces recommandée en production",
+      status: "Bonnes pratiques",
+      level: "ok"
+    }
+  ],
   dsavLogs: [
     {
       time: "18:08:12",
@@ -313,6 +343,26 @@ function renderTables() {
       </tr>
     `;
   }).join("");
+
+  // DevSecOps
+  const devsecopsList = (appState.devsecops || []).filter(item =>
+    !q || (item.component && item.component.toLowerCase().includes(q)) ||
+    (item.check && item.check.toLowerCase().includes(q)) ||
+    (item.finding && item.finding.toLowerCase().includes(q))
+  );
+  const countDevEl = document.getElementById("countDevsecops");
+  if (countDevEl) countDevEl.textContent = devsecopsList.length;
+  const tbodyDevEl = document.getElementById("tbodyDevsecops");
+  if (tbodyDevEl) {
+    tbodyDevEl.innerHTML = devsecopsList.map(item => `
+      <tr>
+        <td><strong>${escapeHtml(item.component)}</strong></td>
+        <td>${escapeHtml(item.check)}</td>
+        <td style="color:var(--text-secondary);">${escapeHtml(item.finding)}</td>
+        <td><span class="tag tag-${item.level}">${escapeHtml(item.status)}</span></td>
+      </tr>
+    `).join("");
+  }
 
   // Journal
   document.getElementById("countJournal").textContent = dsavLogs.length;

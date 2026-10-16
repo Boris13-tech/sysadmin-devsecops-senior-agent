@@ -776,3 +776,39 @@ body {
   font-size: 13px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
 }
+
+/* Print Styles for Clean Executive PDF Export */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    padding: 0;
+    font-size: 11pt;
+  }
+  .topbar, .header-controls, .btn, .action-list, .inspector-card, .table-toolbar, .toast-stack, .modal-overlay {
+    display: none !important;
+  }
+  .shell {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .panel, .table-card, .sys-meta-bar {
+    border: 1px solid #d1d5db !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+  .clean-table th, .clean-table td {
+    border-bottom: 1px solid #e5e7eb !important;
+    color: #1f2937 !important;
+  }
+  .tab-view {
+    display: block !important;
+    margin-bottom: 24pt;
+    page-break-inside: avoid;
+  }
+  .app-footer {
+    border-top: 1px solid #d1d5db !important;
+    color: #4b5563 !important;
+  }
+}
+
