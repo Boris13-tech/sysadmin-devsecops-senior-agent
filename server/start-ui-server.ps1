@@ -99,6 +99,61 @@ try {
                 $out = & powershell -NoProfile -ExecutionPolicy Bypass -File $script -RestoreLatest | Out-String
                 Send-HttpResponse -Context $context -Body $out
             }
+            "/api/rea/inspect-target" {
+                $pidVal = $req.QueryString["pid"]
+                $pathVal = $req.QueryString["path"]
+                $targetPath = $pathVal
+
+                if (-not $targetPath -and $pidVal) {
+                    $targetProc = Get-Process -Id ([int]$pidVal) -ErrorAction SilentlyContinue
+                    if ($targetProc) { $targetPath = $targetProc.Path }
+                }
+
+                if ($targetPath -and (Test-Path -LiteralPath $targetPath)) {
+                    $sig = Get-AuthenticodeSignature -FilePath $targetPath -ErrorAction SilentlyContinue
+                    $sha256 = (Get-FileHash -Path $targetPath -Algorithm SHA256 -ErrorAction SilentlyContinue).Hash
+                    $fInfo = Get-Item -LiteralPath $targetPath -ErrorAction SilentlyContinue
+
+                    $isMicrosoft = $false
+                    $sigStatus = "Non-signe"
+                    if ($sig -and $sig.Status -eq "Valid") {
+                        $sigStatus = "Signe et valide"
+                        if ($sig.SignerCertificate.Subject -match "Microsoft") { $isMicrosoft = $true }
+                    } elseif ($sig) {
+                        $sigStatus = [string]$sig.Status
+                    }
+
+                    $isSuspiciousLoc = ($targetPath -match "\\AppData\\Local\\Temp" -or $targetPath -match "\\Windows\\Temp")
+
+                    $verdict = if ($isMicrosoft -and $sig.Status -eq "Valid") {
+                        "Ce fichier est officiel, certifie par Microsoft et parfaitement sur."
+                    } elseif ($sig -and $sig.Status -eq "Valid") {
+                        "Ce fichier est signe numeriquement par un editeur certifie."
+                    } elseif ($isSuspiciousLoc) {
+                        "Attention : ce binaire s'execute depuis un dossier temporaire sans signature valide."
+                    } else {
+                        "Binaire non signe mais situe dans un emplacement habituel."
+                    }
+
+                    $resObj = [PSCustomObject]@{
+                        TargetName     = $fInfo.Name
+                        TargetPath     = $targetPath
+                        FileSizeKB     = [math]::Round($fInfo.Length / 1KB, 1)
+                        SHA256         = $sha256
+                        Signature      = $sigStatus
+                        Signer         = if ($sig -and $sig.SignerCertificate) { $sig.SignerCertificate.Subject } else { "Aucun" }
+                        IsMicrosoft    = $isMicrosoft
+                        IsSuspiciousLoc= $isSuspiciousLoc
+                        Verdict        = $verdict
+                        EvidenceId     = "REA-EVID-" + (Get-Date).ToString("yyyyMMddHHmmss")
+                        Status         = "ok"
+                    }
+                    Send-HttpResponse -Context $context -Body ($resObj | ConvertTo-Json -Depth 4)
+                } else {
+                    $errObj = @{ error = "Target path not found"; status = "error" } | ConvertTo-Json
+                    Send-HttpResponse -Context $context -Body $errObj -StatusCode 404
+                }
+            }
             default {
                 $relPath = if ($path -eq "/" -or [string]::IsNullOrEmpty($path)) { "index.html" } else { $path.TrimStart('/') }
                 $filePath = Join-Path $docsDir $relPath
