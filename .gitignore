@@ -1,0 +1,7 @@
+# Backups & Local Reports
+backups/
+*.reg
+*.bak*
+*.log
+.DS_Store
+Thumbs.db

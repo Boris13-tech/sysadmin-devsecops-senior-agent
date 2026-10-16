@@ -1,0 +1,12 @@
+{
+  "name": "sysadmin-devsecops",
+  "displayName": "Senior SysAdmin & DevSecOps (Win/Linux)",
+  "version": "1.0.0",
+  "description": "Agent Administrateur Système Senior (Windows & Linux, 10+ ans d'expérience) et expert DevSecOps. Inclut diagnostics automatisés, durcissement sécurité (CIS), dépannage guidé pas-à-pas pour débutants, gestion de conteneurs/IaC et réponse à incident.",
+  "logo": "assets/logo.svg",
+  "suggestedPrompts": [
+    "Fais un bilan complet de santé, de performance et de sécurité de mon PC Windows",
+    "Mon système est lent ou rencontre une erreur : diagnostique et répare le problème pas à pas",
+    "Audite la sécurité de ma machine (ports ouverts, pare-feu, services à risque) et sécurise-la"
+  ]
+}

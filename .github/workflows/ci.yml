@@ -1,0 +1,43 @@
+name: DevSecOps CI — Lint & Security Audit
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-plugin-and-scripts:
+    name: Validate Plugin Manifest, PowerShell & Bash Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate plugin.json syntax
+        run: |
+          jq empty plugin.json
+          echo "plugin.json is valid JSON"
+
+      - name: Validate Bash scripts syntax
+        run: |
+          bash -n install.sh
+          bash -n skills/linux-sysadmin-senior/scripts/linux-health-audit.sh
+          echo "All Bash scripts passed syntax validation"
+
+      - name: Validate PowerShell scripts syntax (pwsh)
+        shell: pwsh
+        run: |
+          $scripts = Get-ChildItem -Path . -Recurse -Filter "*.ps1"
+          foreach ($s in $scripts) {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($s.FullName, [ref]$null, [ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) {
+              Write-Error "Syntax error in $($s.FullName): $($errors | Out-String)"
+              exit 1
+            }
+            Write-Host "Validated: $($s.Name)" -ForegroundColor Green
+          }
