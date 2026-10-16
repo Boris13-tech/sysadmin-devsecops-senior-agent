@@ -1,356 +1,451 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Senior SysAdmin & DevSecOps — Centre de Contrôle Interactif</title>
+  <title>Poste de Contrôle Système — Diagnostic & Maintenance Windows / Linux</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Top Mode Banner -->
-  <div class="mode-banner">
-    <div class="mode-banner-inner">
-      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-        <span id="connectionBadge" class="badge-pill badge-online">🌐 Mode En Ligne / Démo Interactive</span>
-        <span id="connectionHint" style="color:var(--text-muted);">
-          Vous consultez la version Web. Pour agir en 1 clic sur votre propre PC, téléchargez et lancez l'outil local.
+  <!-- Top Status Bar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span id="connectionStatus" class="status-indicator preview">
+          <span class="status-dot-live"></span>
+          <span id="connectionLabel">Aperçu en ligne (Données d'exemple)</span>
+        </span>
+        <span id="connectionSubtext" style="color:var(--text-secondary);">
+          Pour agir directement sur votre ordinateur, lancez l'utilitaire local Windows/Linux.
         </span>
       </div>
-      <div style="display:flex;gap:0.6rem;align-items:center;">
-        <button class="btn btn-outline" style="padding:0.4rem 0.85rem;font-size:0.82rem;" onclick="openDownloadModal()">
-          ❓ Comment l'utiliser sur mon PC ?
+
+      <div class="topbar-right">
+        <button class="btn btn-ghost" onclick="toggleTheme()" id="themeToggleBtn" title="Basculer entre le thème clair et sombre">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <span id="themeToggleLabel">Mode clair</span>
         </button>
-        <a id="downloadZipBtn" href="https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent/releases/latest/download/SysAdmin-DevSecOps-Senior-Tool-v1.0.0.zip" class="btn btn-success" style="padding:0.42rem 0.95rem;font-size:0.84rem;">
-          📥 Télécharger l'Outil PC (.ZIP)
+        <button class="btn" onclick="openGuideModal()">
+          Fonctionnement sur PC
+        </button>
+        <a href="https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent/releases/latest/download/SysAdmin-DevSecOps-Senior-Tool-v1.0.0.zip" class="btn btn-accent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Télécharger l'utilitaire (.zip)
         </a>
       </div>
     </div>
   </div>
 
-  <div class="container">
+  <main class="shell">
     <!-- Main Header -->
-    <header class="app-header">
-      <div class="brand-group">
-        <svg class="brand-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-          <defs>
-            <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#0F172A"/>
-              <stop offset="100%" stop-color="#1E293B"/>
-            </linearGradient>
-            <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#38BDF8"/>
-              <stop offset="100%" stop-color="#10B981"/>
-            </linearGradient>
-          </defs>
-          <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#bgGrad)" stroke="url(#shieldGrad)" stroke-width="5"/>
-          <path d="M64 24 L96 37 V62 C96 84 81 99 64 107 C47 99 32 84 32 62 V37 L64 24 Z" fill="none" stroke="url(#shieldGrad)" stroke-width="5" stroke-linejoin="round"/>
-          <path d="M46 56 L56 64 L46 72" fill="none" stroke="#38BDF8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="60" y1="72" x2="76" y2="72" stroke="#10B981" stroke-width="5" stroke-linecap="round"/>
-        </svg>
-        <div class="brand-title">
-          <h1>Senior SysAdmin & DevSecOps</h1>
-          <p id="hostSubtitle">Assistant Système Windows & Linux (10+ ans d'exp.) — Simple, Sûr & Automatisé</p>
+    <header class="workspace-header">
+      <div class="identity">
+        <div class="identity-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+            <path d="M7 9l2 2-2 2"></path>
+            <line x1="11" y1="13" x2="15" y2="13"></line>
+          </svg>
+        </div>
+        <div class="identity-copy">
+          <h1>
+            Poste de Contrôle Système
+            <span class="version-tag">v1.0 • D.S.A.V.</span>
+          </h1>
+          <p>
+            Diagnostic, entretien et durcissement sécurité Windows &amp; Linux — traduit en clair, avec sauvegarde systématique avant chaque intervention.
+          </p>
         </div>
       </div>
 
-      <div class="header-actions">
-        <button id="btnRunAudit" class="btn btn-primary" onclick="runFullDiagnostic()">
-          🔍 Relancer le Diagnostic Complet
+      <div class="header-controls">
+        <button id="btnRefreshAudit" class="btn btn-primary" onclick="runFullDiagnostic()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          Analyser la machine
         </button>
-        <label class="btn btn-outline" style="cursor:pointer;">
-          📂 Importer un rapport JSON
-          <input type="file" id="jsonFileInput" accept=".json" style="display:none;" onchange="importJsonReport(event)" />
+
+        <label class="btn" style="cursor:pointer;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          Charger un bilan (.json)
+          <input type="file" accept=".json" style="display:none;" onchange="importJsonReport(event)" />
         </label>
-        <button class="btn btn-outline" onclick="exportCurrentReport()">
-          💾 Exporter le Bilan
+
+        <button class="btn" onclick="exportCurrentReport()">
+          Exporter le rapport
         </button>
       </div>
     </header>
 
-    <!-- Hero Health Score & 3 Pillars -->
-    <section class="hero-grid">
-      <div class="card score-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);font-weight:700;">
-            Bilan Global de Santé & Sécurité
-          </span>
-          <span id="lastAuditTime" style="font-size:0.78rem;color:var(--text-muted);">Mis à jour à l'instant</span>
+    <!-- System Metadata Strip -->
+    <div class="sys-meta-bar">
+      <div class="sys-meta-items">
+        <span class="sys-meta-item">Hôte : <strong id="metaHostname" class="tabular">LEGRAND-TECH</strong></span>
+        <span class="sys-meta-item">Système : <strong id="metaOS">Windows 11 Famille (Build 26300)</strong></span>
+        <span class="sys-meta-item">Processeur : <strong id="metaCPU">Intel Core i5-1135G7 (4 cœurs / 8 threads)</strong></span>
+        <span class="sys-meta-item">Session active depuis : <strong id="metaUptime" class="tabular">13h 38m</strong></span>
+      </div>
+      <div class="tabular" id="metaTimestamp" style="color:var(--text-tertiary);">
+        Relevé : 16/10/2026 18:10
+      </div>
+    </div>
+
+    <!-- 4-Column Telemetry Grid -->
+    <section class="telemetry-grid">
+      <!-- 1. Global Health Index -->
+      <div class="panel">
+        <div>
+          <div class="panel-head">
+            <span class="panel-title">Indice d'état général</span>
+            <span id="scoreTag" class="tag tag-ok">Bon état</span>
+          </div>
+          <div class="panel-stat tabular">
+            <span id="scoreNumber">82</span> <small>/ 100</small>
+          </div>
+          <div class="meter">
+            <div id="scoreBar" class="meter-bar" style="width:82%;background-color:var(--ok);"></div>
+          </div>
+        </div>
+        <p id="scoreSummaryText" class="panel-note">
+          La protection réseau est active. Réduire les logiciels lancés au démarrage libérera de la mémoire vive.
+        </p>
+      </div>
+
+      <!-- 2. Memory (RAM) -->
+      <div class="panel">
+        <div>
+          <div class="panel-head">
+            <span class="panel-title">Mémoire vive (RAM)</span>
+            <span id="ramTag" class="tag tag-warn">Sollicitée</span>
+          </div>
+          <div class="panel-stat tabular">
+            <span id="ramUsedLabel">6,1 Go</span> <small>/ <span id="ramTotalLabel">7,7 Go</span></small>
+          </div>
+          <div class="meter">
+            <div id="ramMeter" class="meter-bar" style="width:79%;background-color:var(--warn);"></div>
+          </div>
+        </div>
+        <p id="ramNote" class="panel-note">
+          79 % utilisés (1,6 Go libres). C'est l'espace de travail instantané des applications ouvertes.
+        </p>
+      </div>
+
+      <!-- 3. Disk Space -->
+      <div class="panel">
+        <div>
+          <div class="panel-head">
+            <span class="panel-title">Volume système (C:)</span>
+            <span id="diskTag" class="tag tag-warn">89 % occupé</span>
+          </div>
+          <div class="panel-stat tabular">
+            <span id="diskFreeLabel">24,5 Go</span> <small>disponibles</small>
+          </div>
+          <div class="meter">
+            <div id="diskMeter" class="meter-bar" style="width:89.7%;background-color:var(--warn);"></div>
+          </div>
+        </div>
+        <p id="diskNote" class="panel-note">
+          Sur 236,9 Go au total. Conservez au moins 15 à 20 Go libres pour éviter les ralentissements Windows.
+        </p>
+      </div>
+
+      <!-- 4. Security Posture -->
+      <div class="panel">
+        <div>
+          <div class="panel-head">
+            <span class="panel-title">Conformité sécurité</span>
+            <span id="secTag" class="tag tag-ok">4 / 4 actifs</span>
+          </div>
+          <div class="panel-stat tabular" id="secHeadline">
+            Conforme
+          </div>
+          <div class="meter">
+            <div id="secMeter" class="meter-bar" style="width:100%;background-color:var(--ok);"></div>
+          </div>
+        </div>
+        <p id="secNote" class="panel-note">
+          Pare-feu actif sur les 3 profils, protection temps réel Defender à jour et Bureau à distance fermé.
+        </p>
+      </div>
+    </section>
+
+    <!-- Split Workspace: Left = 1-Click Maintenance, Right = Guided Symptom Inspector -->
+    <section class="workspace-split">
+      <!-- Left Column: Direct Actions -->
+      <div>
+        <div class="section-header">
+          <h2>Interventions rapides</h2>
+          <span>Sauvegarde préalable automatique</span>
         </div>
 
-        <div class="score-circle-wrap">
-          <div id="scoreRing" class="score-ring" style="--score-deg: 295deg;">
-            <span id="scoreValue" class="score-number">82</span>
-            <span class="score-label">/ 100</span>
+        <div class="action-list">
+          <div class="action-row">
+            <div class="action-row-top">
+              <div>
+                <h3>Alléger l'ouverture de session Windows</h3>
+                <p>Désactive le lancement automatique au démarrage des logiciels lourds (Steam, Discord, TeraBox, Docker) sans les désinstaller.</p>
+              </div>
+              <button class="btn btn-primary" onclick="triggerAction('optimize-startup')">Exécuter</button>
+            </div>
+            <div class="action-row-foot">
+              <span>Export préalable de la clé <code class="code-inline">HKCU\...\Run</code></span>
+              <span class="tabular">Gain estimé : ~1,5 Go RAM</span>
+            </div>
           </div>
-          <div class="score-summary">
-            <h2 id="scoreHeadline">Système Sain & Protégé</h2>
-            <p id="scoreSimpleAdvice">
-              Votre sécurité est excellente (Pare-feu et Antivirus actifs). Alléger le démarrage libérera encore plus de mémoire vive.
-            </p>
-          </div>
-        </div>
 
-        <div style="background:rgba(15,23,42,0.65);padding:0.75rem 1rem;border-radius:10px;font-size:0.83rem;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
-          <span>🖥️ <strong id="osLabel">Windows 11</strong></span>
-          <span>⏱️ Allumé depuis : <strong id="uptimeLabel">13h 38m</strong></span>
+          <div class="action-row">
+            <div class="action-row-top">
+              <div>
+                <h3>Purger les fichiers temporaires obsolètes</h3>
+                <p>Supprime uniquement les fichiers temporaires vieux de plus de 48h dans <code class="code-inline">%TEMP%</code>. Vos dossiers personnels ne sont jamais touchés.</p>
+              </div>
+              <button class="btn" onclick="triggerAction('clean-temp')">Nettoyer</button>
+            </div>
+            <div class="action-row-foot">
+              <span>Volume temporaire actuel : <strong id="tempSizeInline" class="tabular">281,4 Mo</strong></span>
+              <span>Sans risque</span>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <div class="action-row-top">
+              <div>
+                <h3>Réinitialiser le cache de résolution DNS</h3>
+                <p>Utile lorsque certains sites web refusent de charger alors que le Wi-Fi fonctionne normalement.</p>
+              </div>
+              <button class="btn" onclick="triggerAction('flush-dns')">Rafraîchir</button>
+            </div>
+            <div class="action-row-foot">
+              <span>Équivalent à <code class="code-inline">Clear-DnsClientCache</code></span>
+              <span>Aucune coupure réseau</span>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <div class="action-row-top">
+              <div>
+                <h3>Restaurer la configuration de démarrage précédente</h3>
+                <p>Réimporte la dernière sauvegarde <code class="code-inline">.reg</code> pour remettre les applications au démarrage exactement comme avant.</p>
+              </div>
+              <button class="btn" onclick="triggerAction('restore-startup')">Annuler (Rollback)</button>
+            </div>
+            <div class="action-row-foot">
+              <span>Protocole de réversibilité D.S.A.V.</span>
+              <span>Instantané</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="metrics-grid" style="height:100%;">
-          <!-- RAM Card -->
-          <div class="metric-box">
-            <div>
-              <div class="metric-header">
-                <span class="metric-title">🧠 Mémoire Vive (RAM)</span>
-                <span id="ramBadge" class="status-dot status-ATTENTION">ATTENTION</span>
-              </div>
-              <div id="ramValue" class="metric-value">7,2 Go / 7,7 Go</div>
-              <div class="progress-bar">
-                <div id="ramBar" class="progress-fill" style="width:88%;background:var(--status-warn);"></div>
-              </div>
-            </div>
-            <p id="ramExplain" class="metric-explain">
-              Utilisée à 88 %. C'est la mémoire de travail instantanée de votre PC.
-            </p>
+      <!-- Right Column: Guided Diagnostic Scenarios -->
+      <div>
+        <div class="section-header">
+          <h2>Assistant de diagnostic pas-à-pas</h2>
+          <span>Sélectionnez un symptôme concret</span>
+        </div>
+
+        <div class="inspector-card">
+          <div class="Scenario-tabs">
+            <button class="scenario-btn active" onclick="selectScenario('slow', this)">PC lent ou ventilateur bruyant</button>
+            <button class="scenario-btn" onclick="selectScenario('disk', this)">Disque presque plein</button>
+            <button class="scenario-btn" onclick="selectScenario('security', this)">Vérification des portes réseau</button>
+            <button class="scenario-btn" onclick="selectScenario('network', this)">Lenteur Internet / DNS</button>
+            <button class="scenario-btn" onclick="selectScenario('linux', this)">Serveur Linux &amp; WSL</button>
           </div>
 
-          <!-- Disk Card -->
-          <div class="metric-box">
-            <div>
-              <div class="metric-header">
-                <span class="metric-title">💿 Stockage (Disques)</span>
-                <span id="diskBadge" class="status-dot status-ATTENTION">ATTENTION</span>
-              </div>
-              <div id="diskValue" class="metric-value">24,5 Go libres</div>
-              <div class="progress-bar">
-                <div id="diskBar" class="progress-fill" style="width:89%;background:var(--status-warn);"></div>
-              </div>
-            </div>
-            <p id="diskExplain" class="metric-explain">
-              Disque C: rempli à 89 %. Gardez toujours au moins 10 % d'espace libre.
-            </p>
-          </div>
-
-          <!-- Security Card -->
-          <div class="metric-box">
-            <div>
-              <div class="metric-header">
-                <span class="metric-title">🛡️ Bouclier Sécurité</span>
-                <span id="secBadge" class="status-dot status-OK">PROTÉGÉ</span>
-              </div>
-              <div id="secValue" class="metric-value">4 / 4 Actifs</div>
-              <div class="progress-bar">
-                <div id="secBar" class="progress-fill" style="width:100%;background:var(--status-ok);"></div>
-              </div>
-            </div>
-            <p id="secExplain" class="metric-explain">
-              Pare-feu, Antivirus temps réel, protection UAC et blocage Bureau à distance actifs.
-            </p>
+          <div id="scenarioContainer" class="scenario-body">
+            <!-- Rendered by app.js -->
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 1-Click Actions ("Fais-le pour moi" - Protocole D.S.A.V.) -->
+    <!-- Detailed Data Tables -->
     <section>
-      <div class="section-title">
-        ⚡ Réparations & Optimisations en 1 Clic (« Fais-le pour moi »)
-        <span style="font-size:0.8rem;font-weight:500;color:var(--text-muted);margin-left:auto;">
-          Protocole D.S.A.V. : Sauvegarde automatique créée avant chaque action
-        </span>
+      <div class="section-header">
+        <h2>Inspection détaillée du système</h2>
+        <span>Chaque élément technique est accompagné de son explication en français clair</span>
       </div>
 
-      <div class="actions-grid">
-        <div class="action-card">
-          <div>
-            <h3>🚀 Alléger le Démarrage</h3>
-            <p>Empêche les logiciels lourds (Steam, Discord, TeraBox, Docker...) de ralentir l'allumage du PC, sans les désinstaller.</p>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('view-startup', this)">
+              Programmes au démarrage (<span id="countStartup" class="tabular">4</span>)
+            </button>
+            <button class="nav-tab" onclick="switchTab('view-processes', this)">
+              Occupation mémoire (<span id="countProcs" class="tabular">5</span>)
+            </button>
+            <button class="nav-tab" onclick="switchTab('view-ports', this)">
+              Ports réseau ouverts (<span id="countPorts" class="tabular">5</span>)
+            </button>
+            <button class="nav-tab" onclick="switchTab('view-journal', this)">
+              Historique &amp; sauvegardes (<span id="countJournal" class="tabular">2</span>)
+            </button>
           </div>
-          <button class="btn btn-primary" onclick="triggerAction('optimize-startup')">
-            Optimiser mon démarrage
-          </button>
+
+          <input
+            type="search"
+            id="tableSearchInput"
+            class="filter-input"
+            placeholder="Filtrer un nom, un port, un PID..."
+            oninput="filterTables(this.value)"
+          />
         </div>
 
-        <div class="action-card">
-          <div>
-            <h3>🧹 Nettoyer les Fichiers Inutiles</h3>
-            <p>Supprime les fichiers temporaires obsolètes (<strong id="tempSizeLabel">281 Mo</strong> détectés) sans jamais toucher à vos documents personnels.</p>
+        <!-- View 1: Startup -->
+        <div id="view-startup" class="tab-view active">
+          <div class="table-context-bar">
+            Ces applications sont inscrites dans le Registre Windows pour démarrer automatiquement dès l'ouverture de votre session.
           </div>
-          <button class="btn btn-success" onclick="triggerAction('clean-temp')">
-            Nettoyer en toute sécurité
-          </button>
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Nom du programme</th>
+                <th>Impact à l'allumage</th>
+                <th>Recommandation</th>
+                <th>Chemin d'exécution</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyStartup"></tbody>
+          </table>
         </div>
 
-        <div class="action-card">
-          <div>
-            <h3>🌐 Réparer Internet / DNS</h3>
-            <p>Vide et rafraîchit le carnet d'adresses Internet de Windows (Cache DNS) si certains sites mettent du temps à s'ouvrir.</p>
+        <!-- View 2: Processes -->
+        <div id="view-processes" class="tab-view">
+          <div class="table-context-bar">
+            Processus consommant actuellement le plus de mémoire physique (Working Set) sur la machine.
           </div>
-          <button class="btn btn-outline" onclick="triggerAction('flush-dns')">
-            Rafraîchir la connexion DNS
-          </button>
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Processus</th>
+                <th>Rôle sur votre ordinateur</th>
+                <th>Mémoire vive (RAM)</th>
+                <th>Temps CPU cumulé</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyProcesses"></tbody>
+          </table>
         </div>
 
-        <div class="action-card">
-          <div>
-            <h3>⏪ Annuler / Rollback 1-Clic</h3>
-            <p>Un regret ? Restaure immédiatement la sauvegarde automatique du Registre de vos applications au démarrage.</p>
+        <!-- View 3: Network Ports -->
+        <div id="view-ports" class="tab-view">
+          <div class="table-context-bar">
+            Ports TCP en écoute sur toutes les interfaces réseau (<code class="code-inline">0.0.0.0</code> / <code class="code-inline">::</code>) et explication de leur usage.
           </div>
-          <button class="btn btn-warn" onclick="triggerAction('restore-startup')">
-            Restaurer l'état précédent
-          </button>
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Port TCP</th>
+                <th>Service / Processus</th>
+                <th>Usage concret</th>
+                <th>Évaluation sécurité</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyPorts"></tbody>
+          </table>
+        </div>
+
+        <!-- View 4: DSAV Journal -->
+        <div id="view-journal" class="tab-view">
+          <div class="table-context-bar">
+            Journal d'audit suivant la méthode D.S.A.V. (Diagnostic → Sauvegarde → Action → Vérification).
+          </div>
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Heure</th>
+                <th>Opération réalisée</th>
+                <th>Fichier de sauvegarde / Point de retour</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyJournal"></tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <!-- Interactive "Docteur PC & Serveur" Symptom Guide -->
-    <section class="card" style="margin-bottom:1.75rem;">
-      <div class="section-title">
-        🩺 Assistant Interactif « Docteur Système » — Que ressentez-vous sur votre machine ?
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div>
+        Conçu et développé par <strong>Boris Owandja</strong> (<a href="https://github.com/Boris13-tech" target="_blank" rel="noopener">@Boris13-tech</a>) — Administration Système Windows / Linux &amp; DevSecOps.
       </div>
-      <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1rem;">
-        Cliquez sur votre problème avec vos propres mots : l'agent Senior traduit le diagnostic et vous propose la solution immédiate.
+      <div style="display:flex;gap:16px;">
+        <a href="https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent" target="_blank" rel="noopener">Code source GitHub</a>
+        <a href="https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent/releases/tag/v1.0.0" target="_blank" rel="noopener">Notes de version v1.0.0</a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Modal: How to run locally on PC -->
+  <div id="guideModal" class="modal-overlay" onclick="if(event.target===this)closeGuideModal()">
+    <div class="modal-dialog">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h2 style="font-size:16px;font-weight:600;">Utiliser l'outil en direct sur votre ordinateur</h2>
+        <button class="btn btn-ghost" style="padding:4px 8px;" onclick="closeGuideModal()">Fermer</button>
+      </div>
+      <p style="color:var(--text-secondary);font-size:13px;margin-bottom:12px;">
+        Un site web ouvert sur Internet n'a pas le droit de modifier votre PC à distance (et c'est tant mieux pour votre sécurité). Pour relier cette interface à votre propre machine sans taper une seule ligne de code :
       </p>
 
-      <div class="wizard-pills">
-        <button class="symptom-btn active" onclick="selectSymptom('slow', this)">🐢 Mon PC est lent / rame</button>
-        <button class="symptom-btn" onclick="selectSymptom('disk', this)">💾 Mon disque dur est presque plein</button>
-        <button class="symptom-btn" onclick="selectSymptom('security', this)">🛡️ J'ai peur d'avoir un virus ou une faille</button>
-        <button class="symptom-btn" onclick="selectSymptom('network', this)">🌍 Internet coupe ou certains sites bloquent</button>
-        <button class="symptom-btn" onclick="selectSymptom('linux', this)">🐧 J'ai un souci sur Linux / WSL / Docker</button>
-      </div>
-
-      <div id="wizardContent" class="wizard-output">
-        <!-- Populated by app.js -->
-      </div>
-    </section>
-
-    <!-- Detailed Beginner-Friendly Tabs -->
-    <section class="card">
-      <div class="tabs-nav">
-        <button class="tab-btn active" onclick="switchTab('tab-startup', this)">🚀 Applications au Démarrage</button>
-        <button class="tab-btn" onclick="switchTab('tab-processes', this)">📊 Ce qui consomme la Mémoire</button>
-        <button class="tab-btn" onclick="switchTab('tab-security', this)">🛡️ Sécurité & Ports Réseau (Traduits)</button>
-        <button class="tab-btn" onclick="switchTab('tab-dsav', this)">📜 Journal D.S.A.V. & Sauvegardes</button>
-      </div>
-
-      <!-- Tab 1: Startup -->
-      <div id="tab-startup" class="tab-panel active">
-        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">
-          💡 <strong>Explication simple :</strong> Ces programmes se lancent automatiquement dès que vous allumez Windows. Moins il y en a, plus votre PC démarre vite et garde de la mémoire libre.
-        </p>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Application</th>
-              <th>Impact sur la mémoire</th>
-              <th>Conseil de l'Admin Senior</th>
-              <th>Commande d'origine</th>
-            </tr>
-          </thead>
-          <tbody id="startupTableBody"></tbody>
-        </table>
-      </div>
-
-      <!-- Tab 2: Processes -->
-      <div id="tab-processes" class="tab-panel">
-        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">
-          💡 <strong>Explication simple :</strong> Voici les programmes actuellement ouverts qui utilisent le plus de mémoire vive (RAM) en ce moment.
-        </p>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Programme</th>
-              <th>Explication en français simple</th>
-              <th>Mémoire utilisée (RAM)</th>
-              <th>Temps Processeur (CPU)</th>
-            </tr>
-          </thead>
-          <tbody id="processTableBody"></tbody>
-        </table>
-      </div>
-
-      <!-- Tab 3: Security & Ports -->
-      <div id="tab-security" class="tab-panel">
-        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">
-          💡 <strong>Explication simple :</strong> Un « port réseau » est comme une porte numérotée sur votre PC. Voici les portes ouvertes sur votre machine et à quoi elles servent réellement.
-        </p>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Port</th>
-              <th>Programme associé</th>
-              <th>À quoi ça sert (sans jargon)</th>
-              <th>Niveau de risque</th>
-            </tr>
-          </thead>
-          <tbody id="portsTableBody"></tbody>
-        </table>
-      </div>
-
-      <!-- Tab 4: DSAV Log -->
-      <div id="tab-dsav" class="tab-panel">
-        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">
-          💡 <strong>Protocole D.S.A.V. (Diagnostic → Sauvegarde → Action → Vérification) :</strong> Chaque intervention crée une sauvegarde automatique pour vous permettre de revenir en arrière à tout moment.
-        </p>
-        <div id="dsavLogList" style="display:flex;flex-direction:column;gap:0.75rem;"></div>
-      </div>
-    </section>
-  </div>
-
-  <!-- Download & Easy Usage Modal -->
-  <div id="downloadModal" class="modal-backdrop" onclick="if(event.target===this)closeDownloadModal()">
-    <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-        <h2 style="font-size:1.3rem;">📥 Utiliser l'Outil sur votre PC (Sans rien connaître en informatique)</h2>
-        <button class="btn btn-outline" style="padding:0.3rem 0.7rem;" onclick="closeDownloadModal()">✕</button>
-      </div>
-      <p style="color:var(--text-muted);font-size:0.92rem;">
-        Vous n'avez aucune commande compliquée à taper. Suivez simplement ces 3 étapes :
-      </p>
-
-      <div class="step-list">
-        <div class="step-item">
-          <span class="step-num">1</span>
+      <div>
+        <div class="guide-step">
+          <span class="guide-index">1</span>
           <div>
-            <strong>Téléchargez le pack clé en main (.ZIP)</strong>
-            <p style="font-size:0.85rem;color:var(--text-muted);">
-              Cliquez sur le bouton vert ci-dessous pour télécharger <code>SysAdmin-DevSecOps-Senior-Tool-v1.0.0.zip</code> et extrayez-le (clic droit → <em>Extraire tout</em>).
+            <strong style="font-size:13.5px;">Téléchargez et décompressez l'archive</strong>
+            <p style="font-size:12.5px;color:var(--text-secondary);margin-top:2px;">
+              Téléchargez <code class="code-inline">SysAdmin-DevSecOps-Senior-Tool-v1.0.0.zip</code> puis faites un clic droit dessus → <em>Extraire tout</em>.
             </p>
           </div>
         </div>
-        <div class="step-item">
-          <span class="step-num">2</span>
+        <div class="guide-step">
+          <span class="guide-index">2</span>
           <div>
-            <strong>Double-cliquez sur <code>Lancer-SysAdmin-UI.bat</code></strong>
-            <p style="font-size:0.85rem;color:var(--text-muted);">
-              Cette même interface visuelle s'ouvrira automatiquement dans votre navigateur, mais connectée en direct (🟢) à votre ordinateur !
+            <strong style="font-size:13.5px;">Double-cliquez sur <code class="code-inline">Lancer-SysAdmin-UI.bat</code></strong>
+            <p style="font-size:12.5px;color:var(--text-secondary);margin-top:2px;">
+              Un petit relais local démarre sur <code class="code-inline">127.0.0.1:8765</code> en utilisant le moteur PowerShell intégré à Windows (aucune installation requise).
             </p>
           </div>
         </div>
-        <div class="step-item">
-          <span class="step-num">3</span>
+        <div class="guide-step">
+          <span class="guide-index">3</span>
           <div>
-            <strong>Cliquez sur les boutons d'action en 1 clic</strong>
-            <p style="font-size:0.85rem;color:var(--text-muted);">
-              Diagnostic, nettoyage, optimisation du démarrage ou annulation (Rollback) : l'agent exécute tout pour vous en arrière-plan.
+            <strong style="font-size:13.5px;">Pilotez votre PC depuis cette interface</strong>
+            <p style="font-size:12.5px;color:var(--text-secondary);margin-top:2px;">
+              Le voyant en haut à gauche passe au vert (<strong>Connecté au poste local</strong>) et tous les boutons d'analyse et de nettoyage agissent en temps réel.
             </p>
           </div>
         </div>
       </div>
 
-      <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.25rem;">
-        <button class="btn btn-outline" onclick="closeDownloadModal()">Fermer</button>
-        <a href="https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent/releases/latest/download/SysAdmin-DevSecOps-Senior-Tool-v1.0.0.zip" class="btn btn-success">
-          📥 Télécharger le .ZIP Maintenant
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
+        <button class="btn" onclick="closeGuideModal()">Compris</button>
+        <a href="https://github.com/Boris13-tech/sysadmin-devsecops-senior-agent/releases/latest/download/SysAdmin-DevSecOps-Senior-Tool-v1.0.0.zip" class="btn btn-accent">
+          Télécharger l'archive (.zip)
         </a>
       </div>
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div id="toastContainer" class="toast-container"></div>
+  <!-- Toast Notifications -->
+  <div id="toastStack" class="toast-stack"></div>
 
   <script src="app.js"></script>
 </body>
